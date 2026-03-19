@@ -1,0 +1,16 @@
+Metadata-Version: 2.4
+Name: crm-service-center
+Version: 0.1.0
+Requires-Python: >=3.11
+Requires-Dist: fastapi
+Requires-Dist: uvicorn[standard]
+Requires-Dist: sqlalchemy[asyncio]
+Requires-Dist: psycopg[binary]
+Requires-Dist: alembic
+Requires-Dist: pydantic
+Requires-Dist: python-jose[cryptography]
+Requires-Dist: passlib[bcrypt]
+Requires-Dist: redis
+Requires-Dist: celery
+Requires-Dist: python-dotenv
+Requires-Dist: asyncpg

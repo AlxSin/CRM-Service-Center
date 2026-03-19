@@ -1,0 +1,18 @@
+[project]
+name = "crm-service-center"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sqlalchemy[asyncio]",
+    "psycopg[binary]",
+    "alembic",
+    "pydantic",
+    "python-jose[cryptography]",
+    "passlib[bcrypt]",
+    "redis",
+    "celery",
+    "python-dotenv",
+    "asyncpg",
+]
