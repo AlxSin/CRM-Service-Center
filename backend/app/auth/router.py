@@ -15,13 +15,9 @@ from app.auth.service import (
 )
 from app.auth.dependencies import get_current_user, get_current_active_user
 from app.auth.roles import require_role, require_roles
-from datetime import datetime, timezone
-from app.auth.dependencies import get_current_user, get_current_active_user
 from app.core.email import send_email
 from app.auth.service import create_email_verify_token, verify_email_token
 from app.core.email_templates import verify_email_template
-from app.core.email_templates import verify_email_template
-from app.auth.service import create_email_verify_token
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -138,37 +134,6 @@ async def verify_email(token: str, session: AsyncSession = Depends(get_session))
     await session.commit()
 
     return {"detail": "Email verified successfully"}
-
-@router.post("/resend-verification")
-async def resend_verification(email: str, session: AsyncSession = Depends(get_session)):
-    # ищем пользователя
-    query = select(User).where(User.email == email)
-    result = await session.execute(query)
-    user = result.scalar_one_or_none()
-
-    if not user:
-        raise HTTPException(404, "User not found")
-
-    if user.is_verified:
-        raise HTTPException(400, "Email already verified")
-
-    # создаём новый токен
-    token = await create_email_verify_token(user.id)
-
-    # формируем ссылку
-    verify_url = f"http://192.168.0.10:8000/auth/verify-email?token={token}"
-
-    # HTML‑шаблон
-    html = verify_email_template(verify_url)
-
-    # отправляем письмо
-    send_email(
-        to=user.email,
-        subject="Повторное подтверждение email — CRM Service Center",
-        body=html
-    )
-
-    return {"detail": "Verification email sent"}
 
 @router.post("/resend-verification")
 async def resend_verification(email: str, session: AsyncSession = Depends(get_session)):

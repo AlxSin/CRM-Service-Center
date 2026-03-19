@@ -1,11 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
 from jose import jwt, JWTError
 from app.core.config import settings
-form datetime import datetime, timedelta, timezone
 from app.core.redis import redis
 import uuid
-from app.core.redis import redis
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 BLACKLIST_PREFIX = "blacklist:refresh:"
@@ -19,12 +17,12 @@ def verify_password(password: str, hashed: str) -> bool:
 
 def create_access_token(user_id: int) -> str:
     expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    payload = {"sub": user_id, "exp": expire}
+    payload = {"sub": user_id, "exp": int(expire.timestamp())}
     return jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
 
 def create_refresh_token(user_id: int) -> str:
     expire = datetime.utcnow() + timedelta(days=7)
-    payload = {"sub": user_id, "exp": expire}
+    payload = {"sub": user_id, "exp": int(expire.timestamp())}
     return jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
 
 def decode_token(token: str):
@@ -34,7 +32,7 @@ def decode_token(token: str):
         return None
 
 async def blacklist_refresh_token(token: str, expires_at: int):
-    ttl = expires_at - int(datetime.now(tz=timezone.utc).timestamp())
+    ttl = int(expires_at) - int(datetime.now(tz=timezone.utc).timestamp())
     if ttl > 0:
         await redis.setex(f"{BLACKLIST_PREFIX}{token}", ttl, "1")
 
@@ -42,8 +40,8 @@ async def is_refresh_token_blacklisted(token: str) -> bool:
     return await redis.exists(f"{BLACKLIST_PREFIX}{token}") == 1
 
 async def create_email_verify_token(user_id: int) -> str:
-    token = str(uuid4())
-    await redis.setex(f"{EMAIL_VERIFY_PREFIX}{token}", 3600, user_id)
+    token = str(uuid.uuid4())
+    await redis.setex(f"{EMAIL_VERIFY_PREFIX}{token}", 3600, str(user_id))
     return token
 
 async def verify_email_token(token: str) -> int | None:
