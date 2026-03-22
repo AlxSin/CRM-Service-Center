@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Пользователь #{{ user.id }}</h2>
+
+<div class="card p-3">
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Роль:</strong> {{ user.role }}</p>
+    <p><strong>Подтверждён:</strong> {{ "Да" if user.is_verified else "Нет" }}</p>
+</div>
+
+<hr>
+
+<h4>Действия</h4>
+
+<form method="post" action="/admin/users/{{ user.id }}/update-role" class="mb-3">
+    <label class="form-label">Изменить роль</label>
+    <select name="role" class="form-select">
+        <option value="user" {% if user.role == "user" %}selected{% endif %}>User</option>
+        <option value="manager" {% if user.role == "manager" %}selected{% endif %}>Manager</option>
+        <option value="admin" {% if user.role == "admin" %}selected{% endif %}>Admin</option>
+    </select>
+    <button class="btn btn-primary mt-2">Сохранить</button>
+</form>
+
+<form method="post" action="/admin/users/{{ user.id }}/verify" class="mb-3">
+    <button class="btn btn-success">Подтвердить email</button>
+</form>
+
+<form method="post" action="/admin/users/{{ user.id }}/delete">
+    <button class="btn btn-danger">Удалить пользователя</button>
+</form>
+
+{% endblock %}

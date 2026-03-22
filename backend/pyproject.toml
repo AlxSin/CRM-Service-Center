@@ -10,6 +10,7 @@ dependencies = [
     "alembic",
     "pydantic",
     "email-validator",
+    "jinja2",
     "python-jose[cryptography]",
     "passlib[bcrypt]",
     "redis",
