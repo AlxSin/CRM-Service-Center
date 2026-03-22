@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Пользователи</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Роль</th>
+            <th>Подтверждён</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.id }}</td>
+            <td><a href="/admin/users/{{ u.id }}">{{ u.email }}</a></td>
+            <td>{{ u.role }}</td>
+            <td>{{ "Да" if u.is_verified else "Нет" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -65,6 +65,9 @@ async def login(data: UserLogin, session: AsyncSession = Depends(get_session)):
     if not user or not verify_password(data.password, user.hashed_password):
         raise HTTPException(401, "Invalid credentials")
 
+    if not user.is_verified:
+        raise HTTPException(401, "Email not verified")
+
     return Token(
         access_token=create_access_token(user.id),
         refresh_token=create_refresh_token(user.id)

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование пользователя{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <h2 style="margin:0 0 14px 0;">Пользователь #{{ user.id }}</h2>
+
+    <p style="margin: 0 0 6px 0;"><b>Email:</b> {{ user.email }}</p>
+    <p style="margin: 0 0 6px 0;"><b>Роль:</b> {{ user.role.value if user.role else '' }}</p>
+    <p style="margin: 0 0 6px 0;"><b>Активен:</b> {{ 'Да' if user.is_active else 'Нет' }}</p>
+    <p style="margin: 0 0 6px 0;"><b>Подтвержден:</b> {{ 'Да' if user.is_verified else 'Нет' }}</p>
+
+    <hr style="border:0; border-top:1px solid #e5e7eb; margin: 14px 0;" />
+
+    <p style="color:#6b7280; margin: 0;">
+      Заготовка страницы редактирования. Пока без POST-обновления — можете расширить функциональность в
+      `app/admin/service.py` и добавить endpoint.
+    </p>
+
+    <div style="margin-top: 14px;">
+      <a class="button" href="/admin/users">Назад к списку</a>
+    </div>
+  </div>
+{% endblock %}
+
